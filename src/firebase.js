@@ -26,3 +26,7 @@ export const auth = getAuth(app); // Export auth
 export const announcementsCollection = collection(firestore, "announcements");
 export const portfoliosCollection = collection(firestore, "portfolios");
 export const classSchedulesCollection = collection(firestore, "classSchedules");
+export const profilesCollection = collection(firestore, "profiles");
+export const subjectsCollection = collection(firestore, "subjects");
+export const enrollmentsCollection = collection(firestore, "enrollments");
+export const usersCollection = collection(firestore, "users");

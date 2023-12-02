@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebase"; // Import your Firebase configuration
 import { ChakraProvider } from "@chakra-ui/react";
+import { AuthProvider } from "./Components/Authentication/AuthContext";
 
 const app = initializeApp(firebaseConfig);
 
@@ -13,7 +14,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
 		<ChakraProvider>
-			<App />
+			<AuthProvider>
+				<App />
+			</AuthProvider>
 		</ChakraProvider>
 	</React.StrictMode>
 );

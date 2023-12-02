@@ -19,7 +19,7 @@ const AnnouncementList = () => {
 	const [announcements, setAnnouncements] = useState([]);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	// Use useEffect to fetch and update announcements when the component mounts
+	// Menggunakan useEffect untuk mengambil dan memperbarui pengumuman saat komponen dimuat
 	useEffect(() => {
 		const unsubscribe = onSnapshot(announcementsCollection, (snapshot) => {
 			const newAnnouncements = snapshot.docs.map((doc) => ({
@@ -29,20 +29,20 @@ const AnnouncementList = () => {
 			setAnnouncements(newAnnouncements);
 		});
 
-		// Cleanup function to unsubscribe when the component unmounts
+		// Fungsi pembersihan untuk berhenti berlangganan ketika komponen dilepas
 		return () => unsubscribe();
 	}, []);
 
-	// Function to handle showing the announcement modal
+	// Fungsi untuk menangani menampilkan modal pengumuman
 	const handleShowAnnouncements = () => {
 		onOpen();
 	};
 
 	return (
-		<Flex align="center" justify="center" mt="4" p="4" minH="100vh">
+		<Flex align="center" justify="center" p="4" minH="100vh">
 			<VStack spacing="8" align="start" w="xl">
 				<Heading mb="4" fontSize="4xl">
-					Latest Announcements
+					Pengumuman Terbaru
 				</Heading>
 				{announcements.slice(0, 3).map((announcement) => (
 					<Box
@@ -60,7 +60,7 @@ const AnnouncementList = () => {
 							<Text>{announcement.content}</Text>
 							<Divider />
 							<Text fontSize="sm" color="gray.500">
-								Posted on:{" "}
+								Diposting pada:{" "}
 								{new Date(
 									announcement.timestamp?.seconds * 1000
 								).toLocaleString()}
@@ -70,11 +70,11 @@ const AnnouncementList = () => {
 				))}
 				{announcements.length > 3 && (
 					<Button colorScheme="blue" onClick={handleShowAnnouncements}>
-						View All Announcements
+						Lihat Semua Pengumuman
 					</Button>
 				)}
 
-				{/* Modal for Announcements */}
+				{/* Modal untuk Pengumuman */}
 				<AnnouncementModal
 					isOpen={isOpen}
 					onClose={onClose}

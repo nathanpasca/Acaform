@@ -1,16 +1,33 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Logout } from "./Authentication/Logout";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { getDoc, doc } from "firebase/firestore";
+import { firestore } from "../firebase";
 
 const NavigationBar = () => {
 	const [user, setUser] = useState(null);
+	const [userData, setUserData] = useState(null);
 
-	// Check if the user is logged in
-	onAuthStateChanged(auth, (user) => {
-		setUser(user);
-	});
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+			setUser(user);
+			if (user) {
+				const userDoc = await getDoc(doc(firestore, "users", user.uid));
+				if (userDoc.exists()) {
+					const fetchedUserData = userDoc.data();
+					setUserData(fetchedUserData);
+
+					const userRole = fetchedUserData.role;
+				} else {
+					console.error("Dokumen pengguna tidak ditemukan di Firestore");
+				}
+			}
+		});
+
+		return () => unsubscribe();
+	}, []);
 
 	return (
 		<div className="navbar bg-base-100">
@@ -35,9 +52,15 @@ const NavigationBar = () => {
 						tabIndex={0}
 						className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
 						<li>
-							<Link to="/announcement-form">
-								<a>Announcement</a>
-							</Link>
+							{userData && userData.role === "lecturer" ? (
+								<Link to="/lecturer-dashboard">
+									<a>Dashboard</a>
+								</Link>
+							) : (
+								<Link to="/enrollment-form">
+									<a>Enrollment</a>
+								</Link>
+							)}
 						</li>
 						<li>
 							<a>Parent</a>
@@ -55,15 +78,23 @@ const NavigationBar = () => {
 						</li>
 					</ul>
 				</div>
-				<a className="btn btn-ghost text-xl">Acaform</a>
+				<Link to="/">
+					<a className="btn btn-ghost text-xl">Acaform</a>
+				</Link>
 			</div>
 			<div className="navbar-center hidden lg:flex">
 				{user ? (
 					<ul className="menu menu-horizontal px-1">
 						<li>
-							<Link to="/announcement-list">
-								<a>Announcement</a>
-							</Link>
+							{userData && userData.role === "lecturer" ? (
+								<Link to="/lecturer-dashboard">
+									<a>Dashboard</a>
+								</Link>
+							) : (
+								<Link to="/enrollment-form">
+									<a>Enrollment</a>
+								</Link>
+							)}
 						</li>
 						<li tabIndex={0}>
 							<details>

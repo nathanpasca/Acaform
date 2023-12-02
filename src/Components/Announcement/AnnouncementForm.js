@@ -1,62 +1,96 @@
-import React, { useState } from "react";
-import { announcementsCollection } from "../../firebase"; // Import only the necessary collection
+import React, { useContext } from "react";
+import { announcementsCollection } from "../../firebase";
 import { addDoc, serverTimestamp } from "firebase/firestore";
+import {
+	Box,
+	Button,
+	Input,
+	Textarea,
+	VStack,
+	FormControl,
+	FormLabel,
+} from "@chakra-ui/react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { AuthContext } from "../Authentication/AuthContext"; // Assuming you have an AuthContext
 
 const AnnouncementForm = () => {
-	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
+	const { user } = useContext(AuthContext); // Retrieve user information from your AuthContext
 
-	const handlePostAnnouncement = async () => {
-		try {
-			const docRef = await addDoc(announcementsCollection, {
-				title,
-				content,
-				timestamp: serverTimestamp(),
-			});
+	const formik = useFormik({
+		initialValues: {
+			title: "",
+			content: "",
+		},
+		validationSchema: Yup.object({
+			title: Yup.string().required("Judul diperlukan"),
+			content: Yup.string().required("Konten pengumuman diperlukan"),
+		}),
+		onSubmit: async (values, { resetForm }) => {
+			try {
+				const docRef = await addDoc(announcementsCollection, {
+					userId: user.uid, // Include the userId in the announcement
+					title: values.title,
+					content: values.content,
+					timestamp: serverTimestamp(),
+				});
 
-			console.log("Announcement added with ID: ", docRef.id);
-		} catch (error) {
-			console.error("Error adding announcement: ", error);
-		}
-
-		setTitle("");
-		setContent(""); // Clear the content after posting
-	};
+				console.log("Pengumuman ditambahkan dengan ID: ", docRef.id);
+				resetForm();
+			} catch (error) {
+				console.error("Error menambahkan pengumuman: ", error);
+			}
+		},
+	});
 
 	return (
-		<div className="flex items-center justify-center mt-4">
-			<div className="bg-white p-8 rounded-xl shadow-md w-1/2 ">
-				<h2 className="text-center text-lg text">Post Announcement</h2>
-				<div className="form-control">
-					<label className="label">
-						<span className="label-text">Title:</span>
-					</label>
-					<input
-						type="text"
-						placeholder="Type here"
-						className="input input-bordered w-full"
-						value={title}
-						onChange={(e) => setTitle(e.target.value)}
-					/>
-				</div>
-				<div className="form-control mt-4">
-					<label className="label">
-						<span className="label-text">Announcement Content:</span>
-					</label>
-					<textarea
-						className="textarea textarea-bordered h-24 w-full"
-						value={content}
-						onChange={(e) => setContent(e.target.value)}
-						placeholder="Type your announcement here"
-					/>
-				</div>
-				<button
-					onClick={handlePostAnnouncement}
-					className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg mt-4">
-					Post Announcement
-				</button>
-			</div>
-		</div>
+		<VStack align="center" spacing={4} w="50%">
+			<Box p={8} rounded="xl" shadow="md" w="50%" bg="white">
+				<Box textAlign="center" mb={4}>
+					<h2 className="text-lg">Kirim Pengumuman</h2>
+				</Box>
+				<VStack align="stretch" spacing={4}>
+					<FormControl isInvalid={formik.touched.title && formik.errors.title}>
+						<FormLabel>Judul:</FormLabel>
+						<Input
+							type="text"
+							placeholder="Ketik di sini"
+							value={formik.values.title}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							name="title"
+						/>
+					</FormControl>
+					{formik.touched.title && formik.errors.title && (
+						<Box color="red.500" fontSize="sm">
+							{formik.errors.title}
+						</Box>
+					)}
+
+					<FormControl
+						isInvalid={formik.touched.content && formik.errors.content}>
+						<FormLabel>Konten Pengumuman:</FormLabel>
+						<Textarea
+							height="24"
+							value={formik.values.content}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							name="content"
+							placeholder="Ketik pengumuman Anda di sini"
+						/>
+					</FormControl>
+					{formik.touched.content && formik.errors.content && (
+						<Box color="red.500" fontSize="sm">
+							{formik.errors.content}
+						</Box>
+					)}
+
+					<Button onClick={formik.handleSubmit} colorScheme="blue" size="md">
+						Kirim Pengumuman
+					</Button>
+				</VStack>
+			</Box>
+		</VStack>
 	);
 };
 

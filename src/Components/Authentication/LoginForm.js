@@ -93,7 +93,7 @@ const LoginForm = () => {
 						</FormControl>
 						<HStack w={"full"} justify={"space-between"}>
 							<Link href="/register" className="text-sm mt-2">
-								<span className="text-primary">Belum punya akun?</span>
+								<span className="text-black">Belum punya akun?</span>
 							</Link>
 						</HStack>
 						<button

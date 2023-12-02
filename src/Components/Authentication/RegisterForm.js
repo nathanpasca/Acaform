@@ -16,7 +16,7 @@ import {
 	InputGroup,
 } from "@chakra-ui/react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { auth, firestore } from "../../firebase";
 
 const RegistrationForm = () => {
@@ -26,6 +26,7 @@ const RegistrationForm = () => {
 		initialValues: {
 			email: "",
 			password: "",
+			displayName: "",
 			role: "student",
 			secretCode: "",
 		},
@@ -38,6 +39,7 @@ const RegistrationForm = () => {
 				.string()
 				.required("Kata sandi diperlukan")
 				.min(8, "Kata sandi harus minimal 8 karakter"),
+			displayName: yup.string().required("Nama tampilan diperlukan"),
 			role: yup.string().required("Peran diperlukan"),
 			secretCode: yup.string().test({
 				name: "secretCode",
@@ -71,7 +73,10 @@ const RegistrationForm = () => {
 
 				await setDoc(doc(firestore, "users", userCredential.user.uid), {
 					email: userCredential.user.email,
+					displayName: values.displayName,
 					role: values.role,
+					createdAt: serverTimestamp(),
+					enrollments: [],
 				});
 
 				alert("Pengguna berhasil terdaftar!");
@@ -122,6 +127,18 @@ const RegistrationForm = () => {
 						</InputGroup>
 						<FormErrorMessage>{formik.errors.password}</FormErrorMessage>
 					</FormControl>
+					<FormControl
+						isInvalid={formik.touched.displayName && formik.errors.displayName}>
+						<FormLabel>Nama Tampilan:</FormLabel>
+						<Input
+							type="text"
+							name="displayName"
+							width="full"
+							{...formik.getFieldProps("displayName")}
+							variant={"filled"}
+						/>
+						<FormErrorMessage>{formik.errors.displayName}</FormErrorMessage>
+					</FormControl>
 					<FormControl isInvalid={formik.touched.role && formik.errors.role}>
 						<FormLabel>Peran:</FormLabel>
 						<Input
@@ -151,14 +168,22 @@ const RegistrationForm = () => {
 					)}
 					<HStack w={"full"} justify={"space-between"}>
 						<Link href="/login" className="text-sm mt-2">
-							<span className="text-primary">Sudah punya akun? Masuk</span>
+							<span className="text-black">Sudah punya akun? Masuk</span>
 						</Link>
 					</HStack>
-					<button
-						className="btn btn-primary place-content-center mt-6 text-white"
-						type="submit">
-						Daftar
-					</button>
+
+					<div class="w-full flex h-20 items-center justify-center">
+						<a
+							href="#_"
+							class="relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-mono font-medium tracking-tighter text-white bg-gray-800 rounded-lg group">
+							<span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-green-500 rounded-full group-hover:w-56 group-hover:h-56"></span>
+							<span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
+
+							<button className="place-content-center" type="submit">
+								<span class="relative">Daftar</span>
+							</button>
+						</a>
+					</div>
 				</VStack>
 			</form>
 		</Box>
