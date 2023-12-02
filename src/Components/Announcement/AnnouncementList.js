@@ -1,9 +1,23 @@
+// AnnouncementList.js
 import React, { useState, useEffect } from "react";
 import { announcementsCollection } from "../../firebase";
 import { onSnapshot } from "firebase/firestore";
+import {
+	Box,
+	Heading,
+	Text,
+	Stack,
+	Flex,
+	VStack,
+	Button,
+	useDisclosure,
+	Divider,
+} from "@chakra-ui/react";
+import AnnouncementModal from "./AnnouncementModal";
 
 const AnnouncementList = () => {
 	const [announcements, setAnnouncements] = useState([]);
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	// Use useEffect to fetch and update announcements when the component mounts
 	useEffect(() => {
@@ -19,58 +33,55 @@ const AnnouncementList = () => {
 		return () => unsubscribe();
 	}, []);
 
+	// Function to handle showing the announcement modal
+	const handleShowAnnouncements = () => {
+		onOpen();
+	};
+
 	return (
-		<div className="flex items-center justify-center mt-4">
-			<div className="bg-white p-8 rounded-xl shadow-md w-1/2">
-				<h1>Announcement</h1>
-				{announcements.map((announcement) => (
-					<div key={announcement.id} className="card w-96 bg-base-100 my-4">
-						<div className="card-body">
-							<h2 className="card-title">{announcement.title}</h2>
-							<p>{announcement.content}</p>
-							<p>
+		<Flex align="center" justify="center" mt="4" p="4" minH="100vh">
+			<VStack spacing="8" align="start" w="xl">
+				<Heading mb="4" fontSize="4xl">
+					Latest Announcements
+				</Heading>
+				{announcements.slice(0, 3).map((announcement) => (
+					<Box
+						key={announcement.id}
+						bg="white"
+						p="6"
+						rounded="lg"
+						shadow="md"
+						w="full"
+						mb="4">
+						<Stack spacing="4">
+							<Heading fontSize="xl" fontWeight="bold">
+								{announcement.title}
+							</Heading>
+							<Text>{announcement.content}</Text>
+							<Divider />
+							<Text fontSize="sm" color="gray.500">
 								Posted on:{" "}
 								{new Date(
 									announcement.timestamp?.seconds * 1000
 								).toLocaleString()}
-							</p>
-						</div>
-					</div>
+							</Text>
+						</Stack>
+					</Box>
 				))}
-			</div>
-		</div>
+				{announcements.length > 3 && (
+					<Button colorScheme="blue" onClick={handleShowAnnouncements}>
+						View All Announcements
+					</Button>
+				)}
 
-		// <div class="pt-6 w-full grid grid-cols-12 gap-4">
-		// 	<div class="col-span-12 md:col-span-4 rounded-lg border border-gray">
-		// 		{announcements.map((announcement) => (
-		// 			<div key={announcement.id}>
-		// 				<div class="w-full bg-gray-50 rounded-t-lg p-4">
-		// 					<p class="text-lg">{announcement.title}</p>
-		// 				</div>
-		// 				<div class="w-full bg-white rounded-b-lg">
-		// 					<div class="flex flex-col h-full w-full px-4 pt-8">
-		// 						<div class="flex text-text mb-4 text-base">
-		// 							{announcement.content}
-		// 						</div>
-		// 						<div class="flex text-text mb-4 text-sm">
-		// 							Posted on:{" "}
-		// 							{new Date(
-		// 								announcement.timestamp?.seconds * 1000
-		// 							).toLocaleString()}
-		// 						</div>
-		// 						<div class="flex flex-row flex-grow">
-		// 							<button
-		// 								type="button"
-		// 								class="relative mt-auto w-full py-2 text-gray-900 border border-red-500 mb-4 items-center mt-auto">
-		// 								GO
-		// 							</button>
-		// 						</div>
-		// 					</div>
-		// 				</div>
-		// 			</div>
-		// 		))}
-		// 	</div>
-		// </div>
+				{/* Modal for Announcements */}
+				<AnnouncementModal
+					isOpen={isOpen}
+					onClose={onClose}
+					announcements={announcements}
+				/>
+			</VStack>
+		</Flex>
 	);
 };
 

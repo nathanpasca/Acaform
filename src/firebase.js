@@ -5,6 +5,7 @@ import {
 	addDoc,
 	serverTimestamp,
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 export const firebaseConfig = {
 	apiKey: "AIzaSyCRBOuZwSeDj4w3gNdSHu64s23NC22ilTg",
@@ -18,7 +19,10 @@ export const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+export const auth = getAuth(app); // Export auth
 
 // Create Firestore collections
+
 export const announcementsCollection = collection(firestore, "announcements");
 export const portfoliosCollection = collection(firestore, "portfolios");
+export const classSchedulesCollection = collection(firestore, "classSchedules");
