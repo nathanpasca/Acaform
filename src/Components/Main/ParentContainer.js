@@ -5,6 +5,7 @@ import { React, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { firestore, auth } from "../../firebase";
+import ChatRoom from "../Others/ChatRoom";
 
 const ParentContainer = () => {
 	const [user, setUser] = useState(null);
@@ -33,11 +34,13 @@ const ParentContainer = () => {
 			{userData && userData.role === "lecturer" ? (
 				<>
 					<AnnouncementList />
+					<ChatRoom />
 				</>
 			) : (
 				<>
 					<AnnouncementList />
 					<EnrolledSubjects />
+					<ChatRoom />
 				</>
 			)}
 		</Flex>

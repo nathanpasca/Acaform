@@ -1,4 +1,3 @@
-// EnrollmentForm.js
 import React, { useState, useEffect } from "react";
 import {
 	Box,
@@ -66,6 +65,27 @@ const EnrollmentForm = () => {
 				const userEnrollments =
 					(await getDoc(userDoc)).data().enrollments || [];
 
+				// Check if the user is already enrolled in the specified subjects
+				const isAlreadyEnrolled = await Promise.all(
+					userEnrollments.map(async (enrollmentId) => {
+						const enrollment = await getDoc(
+							await doc(enrollmentsCollection, enrollmentId)
+						);
+						const enrolledSubjects = enrollment.data().subject_ids;
+						return (
+							enrolledSubjects &&
+							enrolledSubjects.some((subjectId) =>
+								values.subjectIds.includes(subjectId)
+							)
+						);
+					})
+				);
+
+				if (isAlreadyEnrolled.includes(true)) {
+					console.log("User is already enrolled in the specified subjects.");
+					return; // Do not proceed with enrollment
+				}
+
 				// Create a new enrollment document
 				const enrollmentDocRef = await addDoc(enrollmentsCollection, {
 					user_id: user.uid,
@@ -90,18 +110,33 @@ const EnrollmentForm = () => {
 	});
 
 	return (
-		<Box p={8} rounded="xl" shadow="md" bg="white">
+		<Box
+			p={8}
+			rounded="xl"
+			shadow="md"
+			bg="white"
+			display="flex"
+			flexDirection="column"
+			alignItems="center"
+			justifyContent="center"
+			height="80vh"
+			width="80%"
+			mx="auto">
 			<Heading mb={4} fontSize="xl">
 				Enroll in Classes
 			</Heading>
-			<form onSubmit={formik.handleSubmit}>
+			<form
+				onSubmit={formik.handleSubmit}
+				className="w-full max-w-md" // Tailwind CSS classes for width
+			>
 				<FormControl id="subjectIds" isRequired mb={4}>
 					<FormLabel>Subjects:</FormLabel>
 					<Select
 						name="subjectIds"
 						value={formik.values.subjectIds}
 						onChange={formik.handleChange}
-						multiple>
+						multiple
+						className="w-full">
 						{/* Render options dynamically from the subjectsList */}
 						{subjectsList.map((subject) => (
 							<option key={subject.id} value={subject.id}>
@@ -111,7 +146,7 @@ const EnrollmentForm = () => {
 					</Select>
 				</FormControl>
 
-				<Button type="submit" colorScheme="blue">
+				<Button type="submit" colorScheme="blue" className="w-full mt-4">
 					Enroll
 				</Button>
 			</form>

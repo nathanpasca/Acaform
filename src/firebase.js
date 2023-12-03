@@ -6,6 +6,7 @@ import {
 	serverTimestamp,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 export const firebaseConfig = {
 	apiKey: "AIzaSyCRBOuZwSeDj4w3gNdSHu64s23NC22ilTg",
@@ -18,8 +19,9 @@ export const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const firestore = getFirestore(app);
-export const auth = getAuth(app); // Export auth
+const firestore = getFirestore(app);
+const auth = getAuth(app); // Export auth
+const storage = getStorage(app);
 
 // Create Firestore collections
 
@@ -30,3 +32,5 @@ export const profilesCollection = collection(firestore, "profiles");
 export const subjectsCollection = collection(firestore, "subjects");
 export const enrollmentsCollection = collection(firestore, "enrollments");
 export const usersCollection = collection(firestore, "users");
+
+export { app, firestore, auth, storage };
