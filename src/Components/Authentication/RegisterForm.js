@@ -82,7 +82,7 @@ const RegistrationForm = () => {
 
 				alert("Pengguna berhasil terdaftar!");
 
-				navigate("/home");
+				navigate("/");
 			} catch (error) {
 				console.error("Error mendaftarkan pengguna: ", error.message);
 			}

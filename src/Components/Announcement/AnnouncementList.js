@@ -1,7 +1,8 @@
 // AnnouncementList.js
 import React, { useState, useEffect } from "react";
-import { announcementsCollection } from "../../firebase";
-import { onSnapshot } from "firebase/firestore";
+import { announcementsCollection, firestore, auth } from "../../firebase";
+import { onSnapshot, addDoc, deleteDoc, doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 import {
 	Box,
 	Heading,
@@ -19,7 +20,28 @@ const AnnouncementList = () => {
 	const [announcements, setAnnouncements] = useState([]);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	// Menggunakan useEffect untuk mengambil dan memperbarui pengumuman saat komponen dimuat
+	const [user, setUser] = useState(null);
+	const [userData, setUserData] = useState(null);
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+			setUser(user);
+			if (user) {
+				const userDoc = await getDoc(doc(firestore, "users", user.uid));
+				if (userDoc.exists()) {
+					const fetchedUserData = userDoc.data();
+					setUserData(fetchedUserData);
+
+					const userRole = fetchedUserData.role;
+				} else {
+					console.error("Dokumen pengguna tidak ditemukan di Firestore");
+				}
+			}
+		});
+
+		return () => unsubscribe();
+	}, []);
+
 	useEffect(() => {
 		const unsubscribe = onSnapshot(announcementsCollection, (snapshot) => {
 			const newAnnouncements = snapshot.docs.map((doc) => ({
@@ -29,11 +51,26 @@ const AnnouncementList = () => {
 			setAnnouncements(newAnnouncements);
 		});
 
-		// Fungsi pembersihan untuk berhenti berlangganan ketika komponen dilepas
 		return () => unsubscribe();
 	}, []);
 
-	// Fungsi untuk menangani menampilkan modal pengumuman
+	const deleteAnnouncement = async (announcementId) => {
+		try {
+			await deleteDoc(doc(announcementsCollection, announcementId));
+			handleDeleteAnnouncement(announcementId);
+		} catch (error) {
+			console.error("Error deleting announcement:", error);
+		}
+	};
+
+	const handleDeleteAnnouncement = (announcementId) => {
+		setAnnouncements((prevAnnouncements) =>
+			prevAnnouncements.filter(
+				(announcement) => announcement.id !== announcementId
+			)
+		);
+	};
+
 	const handleShowAnnouncements = () => {
 		onOpen();
 	};
@@ -66,6 +103,18 @@ const AnnouncementList = () => {
 								).toLocaleString()}
 							</Text>
 						</Stack>
+						{/* Add delete button */}
+
+						{/* Conditionally render the delete button */}
+						{userData && userData.role === "lecturer" && (
+							<Button
+								colorScheme="red"
+								w="50%"
+								mt={4}
+								onClick={() => deleteAnnouncement(announcement.id)}>
+								Delete Announcement
+							</Button>
+						)}
 					</Box>
 				))}
 				{announcements.length > 3 && (
@@ -74,11 +123,11 @@ const AnnouncementList = () => {
 					</Button>
 				)}
 
-				{/* Modal untuk Pengumuman */}
 				<AnnouncementModal
 					isOpen={isOpen}
 					onClose={onClose}
 					announcements={announcements}
+					deleteAnnouncement={deleteAnnouncement}
 				/>
 			</VStack>
 		</Flex>

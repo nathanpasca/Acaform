@@ -6,14 +6,12 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase";
 import SubjectForm from "../Subject/SubjectForm";
 import EnrollmentForm from "../Enrollment/EnrollmentForm";
-import MaterialUpload from "../Materials/MaterialsUpload";
 import { getDoc, doc } from "firebase/firestore";
 import { firestore } from "../../firebase";
-
 const LecturerDashboard = () => {
 	const [isAnnouncementFormOpen, setAnnouncementFormOpen] = useState(false);
-	const [isClassScheduleFormOpen, setClassScheduleFormOpen] = useState(false);
 	const [isProfileFormOpen, setProfileFormOpen] = useState(false);
+	const [isSubjectFormOpen, setSubjectFormOpen] = useState(false);
 
 	const [user, setUser] = useState(null);
 	const [userData, setUserData] = useState(null);
@@ -41,12 +39,12 @@ const LecturerDashboard = () => {
 		setAnnouncementFormOpen((prev) => !prev);
 	};
 
-	const toggleClassScheduleForm = () => {
-		setClassScheduleFormOpen((prev) => !prev);
-	};
-
 	const toggleProfileForm = () => {
 		setProfileFormOpen((prev) => !prev);
+	};
+
+	const toggleSubjectForm = () => {
+		setSubjectFormOpen((prev) => !prev);
 	};
 
 	// Check if the user is a lecturer
@@ -74,7 +72,9 @@ const LecturerDashboard = () => {
 					)}
 					<Button
 						onClick={toggleAnnouncementForm}
-						colorScheme={isAnnouncementFormOpen ? "teal" : "gray"}>
+						colorScheme={isAnnouncementFormOpen ? "teal" : "gray"}
+						mb={4}
+						mt={6}>
 						{isAnnouncementFormOpen
 							? "Tutup Formulir Pengumuman"
 							: "Buka Formulir Pengumuman"}
@@ -82,15 +82,25 @@ const LecturerDashboard = () => {
 					{isAnnouncementFormOpen && <AnnouncementForm />}
 
 					<Button
-						onClick={toggleClassScheduleForm}
-						colorScheme={isClassScheduleFormOpen ? "teal" : "gray"}>
-						{isClassScheduleFormOpen
+						onClick={toggleProfileForm}
+						colorScheme={isProfileFormOpen ? "teal" : "gray"}
+						mb={4}>
+						{isProfileFormOpen
 							? "Tutup Formulir Profil"
 							: "Buka Formulir Profil"}
 					</Button>
+
 					{isProfileFormOpen && <ProfileForm />}
-					<SubjectForm />
-					<MaterialUpload />
+
+					<Button
+						onClick={toggleSubjectForm}
+						colorScheme={isSubjectFormOpen ? "teal" : "gray"}
+						mb={4}>
+						{isSubjectFormOpen
+							? "Tutup Formulir Mata Kuliah"
+							: "Buka Formulir Mata Kuliah"}
+					</Button>
+					{isSubjectFormOpen && <SubjectForm />}
 				</VStack>
 			</Box>
 		);

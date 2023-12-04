@@ -16,7 +16,12 @@ import {
 	Divider,
 } from "@chakra-ui/react";
 
-const AnnouncementModal = ({ isOpen, onClose, announcements }) => {
+const AnnouncementModal = ({
+	isOpen,
+	onClose,
+	announcements,
+	deleteAnnouncement,
+}) => {
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="xl">
 			<ModalOverlay />
@@ -45,6 +50,11 @@ const AnnouncementModal = ({ isOpen, onClose, announcements }) => {
 										announcement.timestamp?.seconds * 1000
 									).toLocaleString()}
 								</Text>
+								<Button
+									colorScheme="red"
+									onClick={() => deleteAnnouncement(announcement.id)}>
+									Delete Announcement
+								</Button>
 							</Stack>
 						))}
 					</VStack>

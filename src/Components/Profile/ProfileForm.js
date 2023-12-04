@@ -25,7 +25,7 @@ const ProfileForm = () => {
 			achievements: "",
 		},
 		validationSchema: Yup.object({
-			researchJournal: Yup.string().required("Research journal is required"),
+			researchJournal: Yup.string().required("Wajib diisi"),
 			publications: Yup.string(),
 			achievements: Yup.string(),
 		}),
@@ -47,7 +47,7 @@ const ProfileForm = () => {
 					achievements: achievementsArray,
 				});
 
-				console.log("Profile updated/created successfully!");
+				console.log("Profil berhasil diperbarui/dibuat!");
 			} catch (error) {
 				console.error("Error updating/creating profile: ", error);
 			}
@@ -58,17 +58,17 @@ const ProfileForm = () => {
 		<VStack align="center" spacing={4} w="50%">
 			<Box p={8} rounded="xl" shadow="md" w="50%" bg="white">
 				<Box textAlign="center" mb={4}>
-					<h2 className="text-lg">Update Your Profile</h2>
+					<h2 className="text-lg">Perbarui Profil Anda</h2>
 				</Box>
 				<VStack align="stretch" spacing={4}>
 					<FormControl
 						isInvalid={
 							formik.touched.researchJournal && formik.errors.researchJournal
 						}>
-						<FormLabel>Research Journal:</FormLabel>
+						<FormLabel>Jurnal Penelitian:</FormLabel>
 						<Input
 							type="text"
-							placeholder="Enter your research journal"
+							placeholder="Masukkan jurnal penelitian Anda"
 							value={formik.values.researchJournal}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -81,10 +81,10 @@ const ProfileForm = () => {
 						isInvalid={
 							formik.touched.publications && formik.errors.publications
 						}>
-						<FormLabel>Publications:</FormLabel>
+						<FormLabel>Publikasi:</FormLabel>
 						<Textarea
 							height="24"
-							placeholder="Enter your publications (one per line)"
+							placeholder="Masukkan publikasi Anda (satu per baris)"
 							value={formik.values.publications}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -97,10 +97,10 @@ const ProfileForm = () => {
 						isInvalid={
 							formik.touched.achievements && formik.errors.achievements
 						}>
-						<FormLabel>Achievements:</FormLabel>
+						<FormLabel>Pencapaian:</FormLabel>
 						<Textarea
 							height="24"
-							placeholder="Enter your achievements (one per line)"
+							placeholder="Masukkan pencapaian Anda (satu per baris)"
 							value={formik.values.achievements}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -110,7 +110,7 @@ const ProfileForm = () => {
 					</FormControl>
 
 					<Button onClick={formik.handleSubmit} colorScheme="blue" size="md">
-						Update Profile
+						Perbarui Profil
 					</Button>
 				</VStack>
 			</Box>

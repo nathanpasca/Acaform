@@ -25,20 +25,20 @@ const SubjectForm = () => {
 			room: "",
 		},
 		validationSchema: Yup.object({
-			subjectName: Yup.string().required("Subject name is required"),
-			day: Yup.string().required("Day is required"),
+			subjectName: Yup.string().required("Nama Mata Kuliah wajib diisi"),
+			day: Yup.string().required("Hari wajib diisi"),
 			time: Yup.string()
-				.required("Time is required")
+				.required("Waktu wajib diisi")
 				.matches(
 					/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
-					"Invalid time format (HH:mm)"
+					"Format waktu tidak valid (HH:mm)"
 				),
-			room: Yup.string().required("Room is required"),
+			room: Yup.string().required("Ruangan wajib diisi"),
 		}),
 		onSubmit: async (values) => {
 			try {
 				await addDoc(subjectsCollection, {
-					userId: user.uid, // Associate subject with the user
+					userId: user.uid, // Mengaitkan mata kuliah dengan pengguna
 					subjectName: values.subjectName,
 					day: values.day,
 					time: values.time,
@@ -46,7 +46,7 @@ const SubjectForm = () => {
 					createdAt: serverTimestamp(),
 				});
 
-				console.log("Subject added successfully!");
+				console.log("Mata kuliah berhasil ditambahkan!");
 				formik.resetForm();
 			} catch (error) {
 				console.error("Error adding subject: ", error);
@@ -58,15 +58,15 @@ const SubjectForm = () => {
 		<VStack align="center" spacing={4} w="50%">
 			<Box p={8} rounded="xl" shadow="md" w="50%" bg="white">
 				<Box textAlign="center" mb={4}>
-					<h2 className="text-lg">Add Subject</h2>
+					<h2 className="text-lg">Tambah Mata Kuliah</h2>
 				</Box>
 				<VStack align="stretch" spacing={4}>
 					<FormControl
 						isInvalid={formik.touched.subjectName && formik.errors.subjectName}>
-						<FormLabel>Subject Name:</FormLabel>
+						<FormLabel>Nama Mata Kuliah:</FormLabel>
 						<Input
 							type="text"
-							placeholder="Enter subject name"
+							placeholder="Masukkan nama mata kuliah"
 							value={formik.values.subjectName}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -80,27 +80,27 @@ const SubjectForm = () => {
 					)}
 
 					<FormControl isInvalid={formik.touched.day && formik.errors.day}>
-						<FormLabel>Day:</FormLabel>
+						<FormLabel>Hari:</FormLabel>
 						<Select
-							placeholder="Select day"
+							placeholder="Pilih hari"
 							value={formik.values.day}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							name="day">
-							<option value="Monday">Monday</option>
-							<option value="Tuesday">Tuesday</option>
-							<option value="Wednesday">Wednesday</option>
-							<option value="Thursday">Thursday</option>
-							<option value="Friday">Friday</option>
-							{/* Add more options as needed */}
+							<option value="Senin">Senin</option>
+							<option value="Selasa">Selasa</option>
+							<option value="Rabu">Rabu</option>
+							<option value="Kamis">Kamis</option>
+							<option value="Jumat">Jumat</option>
+							{/* Tambahkan opsi lain sesuai kebutuhan */}
 						</Select>
 					</FormControl>
 
 					<FormControl isInvalid={formik.touched.time && formik.errors.time}>
-						<FormLabel>Time:</FormLabel>
+						<FormLabel>Waktu:</FormLabel>
 						<Input
 							type="text"
-							placeholder="Enter time (HH:mm)"
+							placeholder="Masukkan waktu (HH:mm)"
 							value={formik.values.time}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -108,10 +108,10 @@ const SubjectForm = () => {
 						/>
 					</FormControl>
 					<FormControl isInvalid={formik.touched.room && formik.errors.room}>
-						<FormLabel>Room:</FormLabel>
+						<FormLabel>Ruangan:</FormLabel>
 						<Input
 							type="text"
-							placeholder="Enter room"
+							placeholder="Masukkan ruangan"
 							value={formik.values.room}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -126,7 +126,7 @@ const SubjectForm = () => {
 					)}
 
 					<Button onClick={formik.handleSubmit} colorScheme="blue" size="md">
-						Add Subject
+						Tambah Mata Kuliah
 					</Button>
 				</VStack>
 			</Box>
