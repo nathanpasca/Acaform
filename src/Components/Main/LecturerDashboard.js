@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import AnnouncementForm from "../Announcement/AnnouncementForm";
 import ProfileForm from "../Profile/ProfileForm";
+import SubjectForm from "../Subject/SubjectForm";
 import { Button, Box, VStack, Heading, Text } from "@chakra-ui/react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase";
-import SubjectForm from "../Subject/SubjectForm";
-import EnrollmentForm from "../Enrollment/EnrollmentForm";
 import { getDoc, doc } from "firebase/firestore";
 import { firestore } from "../../firebase";
+import MaterialsForm from "../Materials/MaterialsForm"; // Import MaterialsForm
+
 const LecturerDashboard = () => {
 	const [isAnnouncementFormOpen, setAnnouncementFormOpen] = useState(false);
 	const [isProfileFormOpen, setProfileFormOpen] = useState(false);
+	const [isMaterialsFormOpen, setMaterialsFormOpen] = useState(false); // State for MaterialsForm
 	const [isSubjectFormOpen, setSubjectFormOpen] = useState(false);
 
 	const [user, setUser] = useState(null);
@@ -43,6 +45,10 @@ const LecturerDashboard = () => {
 		setProfileFormOpen((prev) => !prev);
 	};
 
+	const toggleMaterialsForm = () => {
+		setMaterialsFormOpen((prev) => !prev);
+	};
+
 	const toggleSubjectForm = () => {
 		setSubjectFormOpen((prev) => !prev);
 	};
@@ -63,7 +69,7 @@ const LecturerDashboard = () => {
 					{user && (
 						<Box>
 							<Heading as="h1" size="xl" mb={2}>
-								Selamat datang, {user.email}!
+								Selamat datang, {userData.displayName || user.email}!
 							</Heading>
 							<Text fontSize="md" color="gray.500">
 								Mulai dengan mengelola pengumuman dan jadwal kelas Anda.
@@ -101,6 +107,17 @@ const LecturerDashboard = () => {
 							: "Buka Formulir Mata Kuliah"}
 					</Button>
 					{isSubjectFormOpen && <SubjectForm />}
+
+					{/* MaterialsForm Section */}
+					<Button
+						onClick={toggleMaterialsForm}
+						colorScheme={isMaterialsFormOpen ? "teal" : "gray"}
+						mb={4}>
+						{isMaterialsFormOpen
+							? "Tutup Formulir Materi"
+							: "Buka Formulir Materi"}
+					</Button>
+					{isMaterialsFormOpen && <MaterialsForm />}
 				</VStack>
 			</Box>
 		);

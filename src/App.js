@@ -10,6 +10,7 @@ import LoginForm from "./Components/Authentication/LoginForm";
 import ParentContainer from "./Components/Main/ParentContainer";
 import LecturerDashboard from "./Components/Main/LecturerDashboard";
 import EnrollmentForm from "./Components/Enrollment/EnrollmentForm";
+import MaterialsList from "./Components/Materials/MaterialsList";
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -44,6 +45,7 @@ function App() {
 				<Route path="/enrollment-form" element={<EnrollmentForm />} />
 				<Route path="/register" element={<RegistrationForm />} />
 				<Route path="/login" element={<LoginForm />} />
+				<Route path="/materials" element={<MaterialsList />} />
 			</Routes>
 		</BrowserRouter>
 	);

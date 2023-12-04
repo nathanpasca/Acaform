@@ -63,9 +63,6 @@ const NavigationBar = () => {
 							)}
 						</li>
 						<li>
-							<a>Parent</a>
-						</li>
-						<li>
 							<a>Profile</a>
 						</li>
 					</ul>
@@ -91,6 +88,12 @@ const NavigationBar = () => {
 
 						<li>
 							<a>Profile</a>
+						</li>
+
+						<li>
+							<Link to="/materials">
+								<a>Materials</a>
+							</Link>
 						</li>
 					</ul>
 				) : (

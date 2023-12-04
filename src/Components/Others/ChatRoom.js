@@ -64,6 +64,13 @@ const ChatRoom = () => {
 				{messages.map((message, index) => (
 					<Box key={index} mb={2}>
 						<Text fontSize="sm" fontWeight="bold">
+							<span className="text-xs font-normal">
+								{message.timestamp.toDate().toLocaleTimeString([], {
+									weekday: "short",
+									hour: "2-digit",
+									minute: "2-digit",
+								})}{" "}
+							</span>
 							{message.userName}:
 						</Text>
 						<Text>{message.content}</Text>
@@ -76,7 +83,7 @@ const ChatRoom = () => {
 					{...formik.getFieldProps("newMessage")}
 				/>
 				<Button colorScheme="blue" onClick={formik.handleSubmit}>
-					Send
+					Kirim
 				</Button>
 			</HStack>
 		</VStack>
