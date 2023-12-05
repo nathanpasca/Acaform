@@ -16,6 +16,8 @@ import {
 	onSnapshot,
 	doc,
 	getDoc,
+	query,
+	orderBy,
 } from "firebase/firestore";
 import { firestore, auth } from "../../firebase";
 
@@ -24,7 +26,7 @@ const ChatRoom = () => {
 
 	useEffect(() => {
 		const unsubscribe = onSnapshot(
-			collection(firestore, "chat"),
+			query(collection(firestore, "chat"), orderBy("timestamp")),
 			(snapshot) => {
 				const newMessages = snapshot.docs.map((doc) => doc.data());
 				setMessages(newMessages);
@@ -60,7 +62,13 @@ const ChatRoom = () => {
 			<Heading mb="4" fontSize="4xl">
 				Obrolan Publik
 			</Heading>
-			<Box bg="gray.100" p={4} borderRadius="md" h="300px" overflowY="auto">
+			<Box
+				bg="gray.100"
+				p={4}
+				borderRadius="md"
+				overflowY="auto"
+				h="300px"
+				maxH="300px">
 				{messages.map((message, index) => (
 					<Box key={index} mb={2}>
 						<Text fontSize="sm" fontWeight="bold">
@@ -77,6 +85,7 @@ const ChatRoom = () => {
 					</Box>
 				))}
 			</Box>
+
 			<HStack>
 				<Input
 					placeholder="Ketik pesan Anda..."

@@ -1,3 +1,4 @@
+// EnrolledSubjects.js
 import React, { useEffect, useState } from "react";
 import {
 	getDocs,
@@ -23,7 +24,6 @@ import {
 const EnrolledSubjects = () => {
 	const { user } = useAuth();
 	const [enrolledSubjects, setEnrolledSubjects] = useState([]);
-	const [classScheduleData, setClassScheduleData] = useState([]);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const handleShowFullList = () => {
@@ -81,19 +81,25 @@ const EnrolledSubjects = () => {
 	}, [user.uid]);
 
 	return (
-		<Flex align="center" justify="center" p="4" minH="100vh">
-			<VStack spacing="8" align="start" w="xl">
+		<Flex
+			align="center"
+			justify="center"
+			p="4"
+			overflowX={{ base: "auto", lg: "hidden" }} // Add horizontal scroll on smaller screens
+		>
+			<VStack spacing="8" align="start" w={{ base: "full", lg: "xl" }}>
 				<Heading mb="4" fontSize="4xl">
 					Jadwal Kelas
 				</Heading>
-				{enrolledSubjects.slice(0, 3).map((subject) => (
+				{enrolledSubjects.map((subject) => (
 					<Box
 						key={subject.id}
 						bg="white"
 						p="6"
 						rounded="lg"
 						shadow="md"
-						w="full"
+						h="full"
+						w={{ base: "full", lg: "full" }} // Adjust width on smaller screens
 						mb="4">
 						<Stack spacing="4">
 							<Text fontSize="lg" fontWeight="bold">
@@ -107,7 +113,9 @@ const EnrolledSubjects = () => {
 					</Box>
 				))}
 				{enrolledSubjects.length > 3 && (
-					<Button colorScheme="blue">Lihat Semua Jadwal</Button>
+					<Button colorScheme="blue" onClick={handleShowFullList}>
+						Lihat Semua Jadwal
+					</Button>
 				)}
 			</VStack>
 		</Flex>

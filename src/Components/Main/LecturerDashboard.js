@@ -69,7 +69,11 @@ const LecturerDashboard = () => {
 					{user && (
 						<Box>
 							<Heading as="h1" size="xl" mb={2}>
-								Selamat datang, {userData.displayName || user.email}!
+								Selamat datang,{" "}
+								{userData && userData.displayName
+									? userData.displayName
+									: user.email}
+								!
 							</Heading>
 							<Text fontSize="md" color="gray.500">
 								Mulai dengan mengelola pengumuman dan jadwal kelas Anda.

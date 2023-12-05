@@ -9,13 +9,15 @@ import {
 	VStack,
 	FormControl,
 	FormLabel,
+	useToast, // Import useToast
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AuthContext } from "../Authentication/AuthContext"; // Assuming you have an AuthContext
+import { AuthContext } from "../Authentication/AuthContext";
 
 const AnnouncementForm = () => {
-	const { user } = useContext(AuthContext); // Retrieve user information from your AuthContext
+	const { user } = useContext(AuthContext);
+	const toast = useToast(); // Initialize the useToast hook
 
 	const formik = useFormik({
 		initialValues: {
@@ -29,7 +31,7 @@ const AnnouncementForm = () => {
 		onSubmit: async (values, { resetForm }) => {
 			try {
 				const docRef = await addDoc(announcementsCollection, {
-					userId: user.uid, // Include the userId in the announcement
+					userId: user.uid,
 					title: values.title,
 					content: values.content,
 					timestamp: serverTimestamp(),
@@ -37,8 +39,25 @@ const AnnouncementForm = () => {
 
 				console.log("Pengumuman ditambahkan dengan ID: ", docRef.id);
 				resetForm();
+
+				// Show success toast
+				toast({
+					title: "Pengumuman berhasil dikirim",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
 			} catch (error) {
 				console.error("Error menambahkan pengumuman: ", error);
+
+				// Show error toast
+				toast({
+					title: "Error",
+					description: "Terjadi kesalahan saat mengirim pengumuman.",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
 			}
 		},
 	});

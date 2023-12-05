@@ -76,8 +76,13 @@ const AnnouncementList = () => {
 	};
 
 	return (
-		<Flex align="center" justify="center" p="4" minH="100vh">
-			<VStack spacing="8" align="start" w="xl">
+		<Flex
+			align="center"
+			justify="center"
+			p="4"
+			overflowX={{ base: "auto", lg: "hidden" }} // Add horizontal scroll on smaller screens
+		>
+			<VStack spacing="8" align="start" w={{ base: "full", lg: "xl" }}>
 				<Heading mb="4" fontSize="4xl">
 					Pengumuman Terbaru
 				</Heading>
@@ -89,6 +94,7 @@ const AnnouncementList = () => {
 						rounded="lg"
 						shadow="md"
 						w="full"
+						h="full"
 						mb="4">
 						<Stack spacing="4">
 							<Heading fontSize="xl" fontWeight="bold">

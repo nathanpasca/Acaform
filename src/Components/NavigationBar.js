@@ -52,6 +52,11 @@ const NavigationBar = () => {
 						tabIndex={0}
 						className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
 						<li>
+							<Link to="/">
+								<a>Home</a>
+							</Link>
+						</li>
+						<li>
 							{userData && userData.role === "lecturer" ? (
 								<Link to="/lecturer-dashboard">
 									<a>Dashboard</a>
@@ -62,8 +67,15 @@ const NavigationBar = () => {
 								</Link>
 							)}
 						</li>
+
 						<li>
 							<a>Profile</a>
+						</li>
+
+						<li>
+							<Link to="/materials">
+								<a>Materials</a>
+							</Link>
 						</li>
 					</ul>
 				</div>
@@ -74,6 +86,11 @@ const NavigationBar = () => {
 			<div className="navbar-center hidden lg:flex">
 				{user ? (
 					<ul className="menu menu-horizontal px-1">
+						<li>
+							<Link to="/">
+								<a>Home</a>
+							</Link>
+						</li>
 						<li>
 							{userData && userData.role === "lecturer" ? (
 								<Link to="/lecturer-dashboard">

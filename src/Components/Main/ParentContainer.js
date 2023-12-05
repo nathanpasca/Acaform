@@ -29,16 +29,22 @@ const ParentContainer = () => {
 
 		return () => unsubscribe();
 	}, []);
+
 	return (
-		<Flex justifyContent="center" alignItems="center" minHeight="100vh">
+		<Flex
+			direction={{ base: "column", md: "row" }}
+			justifyContent="center"
+			alignItems="flex-start"
+			minHeight="100vh"
+			p={4}>
+			<AnnouncementList />
 			{userData && userData.role === "lecturer" ? (
 				<>
-					<AnnouncementList />
 					<ChatRoom />
+					<EnrolledSubjects />
 				</>
 			) : (
 				<>
-					<AnnouncementList />
 					<EnrolledSubjects />
 					<ChatRoom />
 				</>

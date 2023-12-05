@@ -4,17 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
-	FormControl,
-	FormLabel,
-	FormErrorMessage,
 	Box,
 	VStack,
 	Heading,
+	FormControl,
+	FormLabel,
+	FormErrorMessage,
 	Input,
+	InputGroup,
 	HStack,
 	Link,
-	InputGroup,
 	Button,
+	useToast,
+	Select,
 } from "@chakra-ui/react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
@@ -22,6 +24,7 @@ import { auth, firestore } from "../../firebase";
 
 const RegistrationForm = () => {
 	const navigate = useNavigate();
+	const toast = useToast();
 
 	const formik = useFormik({
 		initialValues: {
@@ -42,18 +45,9 @@ const RegistrationForm = () => {
 				.min(8, "Kata sandi harus minimal 8 karakter"),
 			displayName: yup.string().required("Nama tampilan diperlukan"),
 			role: yup.string().required("Peran diperlukan"),
-			secretCode: yup.string().test({
-				name: "secretCode",
-				test: function (value) {
-					const { role } = this.parent;
-					if (role === "lecturer") {
-						return (
-							!!value ||
-							this.createError({ message: "Kode Rahasia diperlukan" })
-						);
-					}
-					return true;
-				},
+			secretCode: yup.string().when("role", {
+				is: "lecturer",
+				then: yup.string().required("Kode Rahasia diperlukan"),
 			}),
 		}),
 
@@ -80,11 +74,24 @@ const RegistrationForm = () => {
 					enrollments: [],
 				});
 
-				alert("Pengguna berhasil terdaftar!");
+				toast({
+					title: "Registration Success",
+					description: "Pengguna berhasil terdaftar!",
+					status: "success",
+					duration: 5000,
+					isClosable: true,
+				});
 
 				navigate("/");
 			} catch (error) {
 				console.error("Error mendaftarkan pengguna: ", error.message);
+				toast({
+					title: "Registration Error",
+					description: error.message,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		},
 	});
@@ -98,30 +105,31 @@ const RegistrationForm = () => {
 			border={["none", "1px"]}
 			borderColor={["", "gray.300"]}
 			borderRadius={10}>
-			<form onSubmit={formik.handleSubmit}>
+			<form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
 				<VStack spacing={4} align={"flex-start"} w={"full"}>
 					<VStack spacing={1} align={["center", "center"]} w={"full"} mb={4}>
 						<Heading fontSize="24px">Daftar</Heading>
 					</VStack>
-					<FormControl isInvalid={formik.touched.email && formik.errors.email}>
+					<FormControl
+						isInvalid={formik.touched.email && formik.errors.email}
+						width="100%">
 						<FormLabel>Email:</FormLabel>
 						<Input
 							type="email"
 							name="email"
-							width="full"
 							{...formik.getFieldProps("email")}
 							variant={"filled"}
 						/>
 						<FormErrorMessage>{formik.errors.email}</FormErrorMessage>
 					</FormControl>
 					<FormControl
-						isInvalid={formik.touched.password && formik.errors.password}>
+						isInvalid={formik.touched.password && formik.errors.password}
+						width="100%">
 						<FormLabel>Kata Sandi:</FormLabel>
 						<InputGroup>
 							<Input
 								type="password"
 								name="password"
-								width="full"
 								{...formik.getFieldProps("password")}
 								variant={"filled"}
 							/>
@@ -129,38 +137,38 @@ const RegistrationForm = () => {
 						<FormErrorMessage>{formik.errors.password}</FormErrorMessage>
 					</FormControl>
 					<FormControl
-						isInvalid={formik.touched.displayName && formik.errors.displayName}>
+						isInvalid={formik.touched.displayName && formik.errors.displayName}
+						width="100%">
 						<FormLabel>Nama Tampilan:</FormLabel>
 						<Input
 							type="text"
 							name="displayName"
-							width="full"
 							{...formik.getFieldProps("displayName")}
 							variant={"filled"}
 						/>
 						<FormErrorMessage>{formik.errors.displayName}</FormErrorMessage>
 					</FormControl>
-					<FormControl isInvalid={formik.touched.role && formik.errors.role}>
+					<FormControl
+						isInvalid={formik.touched.role && formik.errors.role}
+						width="100%">
 						<FormLabel>Peran:</FormLabel>
-						<Input
-							as="select"
+						<Select
 							name="role"
-							width="full"
 							{...formik.getFieldProps("role")}
 							variant={"filled"}>
 							<option value="student">Mahasiswa</option>
 							<option value="lecturer">Dosen</option>
-						</Input>
+						</Select>
 						<FormErrorMessage>{formik.errors.role}</FormErrorMessage>
 					</FormControl>
 					{formik.values.role === "lecturer" && (
 						<FormControl
-							isInvalid={formik.touched.secretCode && formik.errors.secretCode}>
+							isInvalid={formik.touched.secretCode && formik.errors.secretCode}
+							width="100%">
 							<FormLabel>Kode Rahasia:</FormLabel>
 							<Input
 								type="text"
 								name="secretCode"
-								width="full"
 								{...formik.getFieldProps("secretCode")}
 								variant={"filled"}
 							/>
@@ -172,18 +180,12 @@ const RegistrationForm = () => {
 							<span className="text-black">Sudah punya akun? Masuk</span>
 						</Link>
 					</HStack>
-
 					<Button
 						type="submit"
-						bg="gray.800"
-						color="white"
-						_hover={{ bg: "gray.700" }}
-						w="full"
-						h={20}
-						rounded="lg"
-						position="relative"
-						overflow="hidden">
-						<span className="relative">Daftar</span>
+						colorScheme="teal"
+						mt={6}
+						isLoading={formik.isSubmitting}>
+						Daftar
 					</Button>
 				</VStack>
 			</form>
