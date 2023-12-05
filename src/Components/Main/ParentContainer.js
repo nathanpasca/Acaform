@@ -37,14 +37,14 @@ const ParentContainer = () => {
 			alignItems="flex-start"
 			minHeight="100vh"
 			p={4}>
-			<AnnouncementList />
 			{userData && userData.role === "lecturer" ? (
 				<>
+					<AnnouncementList />
 					<ChatRoom />
-					<EnrolledSubjects />
 				</>
 			) : (
 				<>
+					<AnnouncementList />
 					<EnrolledSubjects />
 					<ChatRoom />
 				</>
