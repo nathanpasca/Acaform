@@ -8,12 +8,14 @@ import { auth } from "../../firebase";
 import { getDoc, doc } from "firebase/firestore";
 import { firestore } from "../../firebase";
 import MaterialsForm from "../Materials/MaterialsForm"; // Import MaterialsForm
+import SecretCodeForm from "../Authentication/SecretCodeForm";
 
 const LecturerDashboard = () => {
 	const [isAnnouncementFormOpen, setAnnouncementFormOpen] = useState(false);
 	const [isProfileFormOpen, setProfileFormOpen] = useState(false);
 	const [isMaterialsFormOpen, setMaterialsFormOpen] = useState(false); // State for MaterialsForm
 	const [isSubjectFormOpen, setSubjectFormOpen] = useState(false);
+	const [isSecretCodeFormOpen, setSecretCodeFormOpen] = useState(false);
 
 	const [user, setUser] = useState(null);
 	const [userData, setUserData] = useState(null);
@@ -36,22 +38,6 @@ const LecturerDashboard = () => {
 
 		return () => unsubscribe();
 	}, []);
-
-	const toggleAnnouncementForm = () => {
-		setAnnouncementFormOpen((prev) => !prev);
-	};
-
-	const toggleProfileForm = () => {
-		setProfileFormOpen((prev) => !prev);
-	};
-
-	const toggleMaterialsForm = () => {
-		setMaterialsFormOpen((prev) => !prev);
-	};
-
-	const toggleSubjectForm = () => {
-		setSubjectFormOpen((prev) => !prev);
-	};
 
 	// Check if the user is a lecturer
 	if (userData && userData.role !== "lecturer") {
@@ -81,8 +67,9 @@ const LecturerDashboard = () => {
 						</Box>
 					)}
 					<Button
-						onClick={toggleAnnouncementForm}
+						onClick={() => setAnnouncementFormOpen((prev) => !prev)}
 						colorScheme={isAnnouncementFormOpen ? "teal" : "gray"}
+						width={{ base: "100%", sm: "400px", md: "400px", lg: "400px" }} // Responsive width
 						mb={4}
 						mt={6}>
 						{isAnnouncementFormOpen
@@ -92,8 +79,9 @@ const LecturerDashboard = () => {
 					{isAnnouncementFormOpen && <AnnouncementForm />}
 
 					<Button
-						onClick={toggleProfileForm}
+						onClick={() => setProfileFormOpen((prev) => !prev)}
 						colorScheme={isProfileFormOpen ? "teal" : "gray"}
+						width={{ base: "100%", sm: "400px", md: "400px", lg: "400px" }}
 						mb={4}>
 						{isProfileFormOpen
 							? "Tutup Formulir Profil"
@@ -103,8 +91,9 @@ const LecturerDashboard = () => {
 					{isProfileFormOpen && <ProfileForm />}
 
 					<Button
-						onClick={toggleSubjectForm}
+						onClick={() => setSubjectFormOpen((prev) => !prev)}
 						colorScheme={isSubjectFormOpen ? "teal" : "gray"}
+						width={{ base: "100%", sm: "400px", md: "400px", lg: "400px" }}
 						mb={4}>
 						{isSubjectFormOpen
 							? "Tutup Formulir Mata Kuliah"
@@ -114,14 +103,28 @@ const LecturerDashboard = () => {
 
 					{/* MaterialsForm Section */}
 					<Button
-						onClick={toggleMaterialsForm}
+						onClick={() => setMaterialsFormOpen((prev) => !prev)}
 						colorScheme={isMaterialsFormOpen ? "teal" : "gray"}
+						width={{ base: "100%", sm: "400px", md: "400px", lg: "400px" }}
 						mb={4}>
 						{isMaterialsFormOpen
 							? "Tutup Formulir Materi"
 							: "Buka Formulir Materi"}
 					</Button>
 					{isMaterialsFormOpen && <MaterialsForm />}
+
+					<Button
+						onClick={() => setSecretCodeFormOpen((prev) => !prev)}
+						colorScheme={isSecretCodeFormOpen ? "teal" : "gray"}
+						width={{ base: "100%", sm: "400px", md: "400px", lg: "400px" }}
+						mb={4}>
+						{isSecretCodeFormOpen
+							? "Tutup Formulir Kode Rahasia"
+							: "Buka Formulir Kode Rahasia"}
+					</Button>
+
+					{/* Render SecretCodeForm if it's open */}
+					{isSecretCodeFormOpen && <SecretCodeForm />}
 				</VStack>
 			</Box>
 		);
