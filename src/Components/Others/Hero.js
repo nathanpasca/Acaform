@@ -96,6 +96,7 @@ export const Hero = () => {
 								</p>
 								<p className="mb-5">
 									Anda harus terdaftar dan masuk untuk menggunakan platform ini.
+									Silahkan klik tombol Mulai di bawah.
 								</p>
 								<div class="w-full  flex items-center justify-center">
 									<a href="#_" class="relative inline-block text-lg group">

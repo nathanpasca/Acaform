@@ -155,6 +155,18 @@ const RegistrationForm = () => {
 						<FormErrorMessage>{formik.errors.email}</FormErrorMessage>
 					</FormControl>
 					<FormControl
+						isInvalid={formik.touched.displayName && formik.errors.displayName}
+						width="100%">
+						<FormLabel>Nama Tampilan:</FormLabel>
+						<Input
+							type="text"
+							name="displayName"
+							{...formik.getFieldProps("displayName")}
+							variant={"filled"}
+						/>
+						<FormErrorMessage>{formik.errors.displayName}</FormErrorMessage>
+					</FormControl>
+					<FormControl
 						isInvalid={formik.touched.password && formik.errors.password}
 						width="100%">
 						<FormLabel>Kata Sandi:</FormLabel>
@@ -168,18 +180,7 @@ const RegistrationForm = () => {
 						</InputGroup>
 						<FormErrorMessage>{formik.errors.password}</FormErrorMessage>
 					</FormControl>
-					<FormControl
-						isInvalid={formik.touched.displayName && formik.errors.displayName}
-						width="100%">
-						<FormLabel>Nama Tampilan:</FormLabel>
-						<Input
-							type="text"
-							name="displayName"
-							{...formik.getFieldProps("displayName")}
-							variant={"filled"}
-						/>
-						<FormErrorMessage>{formik.errors.displayName}</FormErrorMessage>
-					</FormControl>
+
 					<FormControl
 						isInvalid={formik.touched.role && formik.errors.role}
 						width="100%">
